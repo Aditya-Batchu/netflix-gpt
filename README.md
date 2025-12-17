@@ -9,6 +9,9 @@
 - Firbase setup
 - Deploying app to production  : [Deployement Link](https://netflixgpt-1dce1.web.app/)
 - Create a Sign Up User 
+- Implement Sign using API
+- Created Redux Store with userSlice
+- 
 
 # Featues
 
