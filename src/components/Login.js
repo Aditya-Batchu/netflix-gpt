@@ -1,14 +1,21 @@
 import React, { useRef, useState } from "react";
 import Header from "./Header";
 import { checkValidData } from "../utils/validate";
-import { createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth";
+import {
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  updateProfile,
+} from "firebase/auth";
 import { auth } from "../utils/firebase";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { addUser } from "../utils/userSlice";
 
 const Login = () => {
   const navigate = useNavigate();
   const [isSignInForm, setIsSignInForm] = useState(true);
   const [signInError, setSignInError] = useState(null);
+  const dispatch = useDispatch();
 
   const email = useRef(null);
   const password = useRef(null);
@@ -31,9 +38,21 @@ const Login = () => {
         .then((userCredential) => {
           // Signed up
           const user = userCredential.user;
-          console.log(user);
-          navigate("/browse");
-        }) 
+          updateProfile(user, {
+            displayName: Name,
+            photoURL:
+              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRYB-Orm4FQalw96dbEDr3Lemoj646vS2dUDmuxG9LsVg&s",
+          })
+            .then(() => {
+              console.log(user);
+              const { uid, email, displayName, photoURL } = auth.currentUser;
+              dispatch(addUser({ uid, email, displayName, photoURL }));
+              navigate("/browse");
+            })
+            .catch((error) => {
+              setSignInError(error.message);
+            });
+        })
         .catch((error) => {
           const errorCode = error.code;
           const errorMessage = error.message;
@@ -52,7 +71,7 @@ const Login = () => {
         .catch((error) => {
           const errorCode = error.code;
           const errorMessage = error.message;
-          console.log(errorCode+"   --   "+errorMessage);
+          console.log(errorCode + "   --   " + errorMessage);
         });
     }
 
