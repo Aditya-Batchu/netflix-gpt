@@ -9,6 +9,7 @@ import {
 import { auth } from "../utils/firebase";
 import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice";
+import { NETFLIX_BACKGROUND, USER_AVATAR } from "../utils/constants";
 
 const Login = () => {
   const [isSignInForm, setIsSignInForm] = useState(true);
@@ -38,8 +39,7 @@ const Login = () => {
           const user = userCredential.user;
           updateProfile(user, {
             displayName: Name,
-            photoURL:
-              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRYB-Orm4FQalw96dbEDr3Lemoj646vS2dUDmuxG9LsVg&s",
+            photoURL:USER_AVATAR ,
           })
             .then(() => {
               console.log(user);
@@ -85,7 +85,7 @@ const Login = () => {
       <Header />
       <div className="absolute">
         <img
-          src="https://assets.nflxext.com/ffe/siteui/vlv3/c81956f1-5750-454c-9b3c-7a4d990d3d06/web/IN-en-20251208-TRIFECTA-perspective_d69f5f82-9a35-45d7-a7b6-9af6e0643bf5_large.jpg"
+          src={NETFLIX_BACKGROUND}
           alt="background"
         />
       </div>
@@ -145,7 +145,6 @@ const Login = () => {
               : "Already Registered? Sign In Now.."}
           </span>
         </button>
-        
       </form>
     </div>
   );

@@ -15,8 +15,8 @@
 - Updated profile 
 - Bug Fix: Sign up user displayName and profile picture update.
 - BugFix : Redirect user to browse page only if user logged in && redirect to login page if not login in.
-
-
+- Unsubscribed to the store on onAuthStateChanged callback
+- Add hard coded values to the constants file
 
 # Featues
 
