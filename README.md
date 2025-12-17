@@ -13,6 +13,10 @@
 - Created Redux Store with userSlice
 - Implemented Sign Out feature
 - Updated profile 
+- Bug Fix: Sign up user displayName and profile picture update.
+- BugFix : Redirect user to browse page only if user logged in && redirect to login page if not login in.
+
+
 
 # Featues
 
