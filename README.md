@@ -17,6 +17,8 @@
 - BugFix : Redirect user to browse page only if user logged in && redirect to login page if not login in.
 - Unsubscribed to the store on onAuthStateChanged callback
 - Add hard coded values to the constants file
+- registered for TMDB and create an API KEY & get access token.
+- Made an api call for now playing movies
 
 # Featues
 
