@@ -10,9 +10,7 @@
 
 src/utils/firebase.js
 
-src/utils/constants.js
-# ensure constants file is ignored (absolute-style)
-/src/utils/constants.js
+src/utils/constants.js 
 
 # testing
 /coverage
