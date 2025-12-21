@@ -34,6 +34,8 @@
 - Made the browser page amazing with tailwind css
 - usePopularMovies with custom hooks
 - GPT Search feature
+- GPT search Bar
+- Added multi-langual feature for GPT Search
 
 # Featues
 
