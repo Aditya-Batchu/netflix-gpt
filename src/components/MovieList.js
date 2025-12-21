@@ -2,7 +2,6 @@ import MovieCard from "./MovieCard";
 
 const MovieList = (props) => {
   const { title, movies } = props;
-  console.log(movies);
   return (
     movies && (
       <div className="pt-6">

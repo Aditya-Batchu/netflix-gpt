@@ -8,6 +8,8 @@ import { addUser, removeUser } from "../utils/userSlice";
 import { NETFLIX_LOGO } from "../utils/constants";
 import { USER_AVATAR } from "../utils/constants";
 import { toggleGptSearchView } from "../utils/gptSlice";
+import { SUPPORTED_LANGUAGES } from "../utils/constants";
+import { changeLanguage } from "../utils/configSlice";
 
 const Header = () => {
   const navigate = useNavigate();
@@ -17,6 +19,10 @@ const Header = () => {
   const handleGptSearchClick = () => {
     dispatch(toggleGptSearchView());
   };
+
+  const handleLanguageChange = (e)=>{
+    dispatch(changeLanguage(e.target.value));
+  }
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -54,6 +60,13 @@ const Header = () => {
       <img className="w-44" src={NETFLIX_LOGO} alt="Logo" />
       {user && (
         <div className="flex p-2">
+          <select className="bg-gray-900 text-white p-2 m-2 rounded-md" onChange={handleLanguageChange}>
+            {SUPPORTED_LANGUAGES.map((lang) => (
+              <option key={lang.identifier} value={lang.identifier}>
+                {lang.name}
+              </option>
+            ))}
+          </select>
           <button
             className="py-4 px-4 m-2 bg-purple-800 text-white rounded-md"
             onClick={handleGptSearchClick}
