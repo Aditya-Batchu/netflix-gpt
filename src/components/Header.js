@@ -7,11 +7,16 @@ import { onAuthStateChanged } from "firebase/auth";
 import { addUser, removeUser } from "../utils/userSlice";
 import { NETFLIX_LOGO } from "../utils/constants";
 import { USER_AVATAR } from "../utils/constants";
+import { toggleGptSearchView } from "../utils/gptSlice";
 
 const Header = () => {
   const navigate = useNavigate();
   const user = useSelector((store) => store.user);
   const dispatch = useDispatch();
+
+  const handleGptSearchClick = () => {
+    dispatch(toggleGptSearchView());
+  };
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
@@ -30,7 +35,7 @@ const Header = () => {
     });
 
     // Unsubscribe when component unmounts.
-    return ()=> unsubscribe(); 
+    return () => unsubscribe();
   }, []);
 
   const handleSignOut = () => {
@@ -46,20 +51,18 @@ const Header = () => {
 
   return (
     <div className="absolute w-screen px-8 py-2 bg-gradient-to-b from-black z-10 flex justify-between">
-      <img
-        className="w-44"
-        src={NETFLIX_LOGO}
-        alt="Logo"
-      />
+      <img className="w-44" src={NETFLIX_LOGO} alt="Logo" />
       {user && (
         <div className="flex p-2">
+          <button
+            className="py-4 px-4 m-2 bg-purple-800 text-white rounded-md"
+            onClick={handleGptSearchClick}
+          >
+            GPT button
+          </button>
           <img
             className="w-14 h-14 rounded-sm"
-            src={
-              user?.photoURL
-                ? user.photoURL
-                : {USER_AVATAR}
-            }
+            src={user?.photoURL ? user.photoURL : { USER_AVATAR }}
             alt="userIcon"
           />
           <button onClick={handleSignOut} className="ml-3 font-bold text-white">

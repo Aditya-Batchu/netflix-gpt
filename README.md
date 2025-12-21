@@ -7,12 +7,12 @@
 - UseRef Hook
 - Form Validation
 - Firbase setup
-- Deploying app to production  : [Deployement Link](https://netflixgpt-1dce1.web.app/)
-- Create a Sign Up User 
+- Deploying app to production : [Deployement Link](https://netflixgpt-1dce1.web.app/)
+- Create a Sign Up User
 - Implement Sign using API
 - Created Redux Store with userSlice
 - Implemented Sign Out feature
-- Updated profile 
+- Updated profile
 - Bug Fix: Sign up user displayName and profile picture update.
 - BugFix : Redirect user to browse page only if user logged in && redirect to login page if not login in.
 - Unsubscribed to the store on onAuthStateChanged callback
@@ -27,25 +27,28 @@
 - Update store with trailer
 - embedded the Youtube video and make it autoplay and mute
 - Tailwind class for Main Container Look
-
+- Build Secondary container
+- Build movieList
+- Build movieCard
+- TMDB Image CDN URL
+- Made the browser page amazing with tailwind css
+- usePopularMovies with custom hooks
+- GPT Search feature
 
 # Featues
 
 - Login/Signup Page
-    - Sign/Sign up Form
-    - Redirect to Browse Page
+  - Sign/Sign up Form
+  - Redirect to Browse Page
 - Browse page(After Authentication)
-    - Header
-    - Main Movies
-      - Trailer in Backgriund
-      - Title & Movie Description
-      - Movie Suggestion
-        - MovieLIst * N
-      
-- NetflixGPT
-    - Search Bar
+  - Header
+  - Main Movies
+    - Trailer in Backgriund
+    - Title & Movie Description
     - Movie Suggestion
-
-
+      - MovieLIst \* N
+- NetflixGPT
+  - Search Bar
+  - Movie Suggestion
 
 # Reading documentation is a super power of a developer
