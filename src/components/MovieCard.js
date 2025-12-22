@@ -2,6 +2,7 @@ import { IMG_CDN_URL } from "../utils/constants"
 
 const MovieCard = (props) => {
   const {poster_path} = props;
+  if(!poster_path) return null;
   return (
     <div className="w-48">
       <img

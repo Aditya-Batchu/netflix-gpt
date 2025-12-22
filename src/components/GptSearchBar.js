@@ -39,7 +39,7 @@ const GptSearchBar = () => {
       // Convert "Movie 1, Movie 2" -> ["Movie 1", "Movie 2"]
       const movieArray = responseText.split(",").map((m) => m.trim());
 
-      // console.log("Gemini Movie Array:", movieArray);
+      console.log("Gemini Movie Array:", movieArray);
 
       // Next Step: dispatch(addGptMovieResult({movieNames: movieArray}));
 
