@@ -13,16 +13,16 @@ const VideoTitle = (props) => {
   const shortOverview = truncateOverview(overview, maxLength);
 
   return (
-    <div className="w-screen aspect-video pt-[15%] px-16 absolute text-white bg-gradient-to-r from-black">
-      <h1 className="text-6xl font-bold w-1/2">{title}</h1>
-      <p className="py-6 text-lg w-1/4 ">{shortOverview}</p>
+    <div className="w-screen aspect-video pt-[15%] px-6 md:px-16 absolute text-white bg-gradient-to-r from-black">
+      <h1 className="text-3 xl md:text-6xl font-bold w-1/2 mt-20 mb-5">{title}</h1>
+      <p className="py-6 text-lg w-1/4 hidden md:inline-block">{shortOverview}</p>
 
       <div className="">
-        <button className="bg-white text-black p-4 px-10 text-lg rounded-lg hover:bg-opacity-80">
+        <button className="bg-white text-black py-2 md:py-4 px-6 md:px-10 text-lg rounded-lg hover:bg-opacity-80">
           {" "}
           🎥 Play
         </button>
-        <button className="bg-gray-500 text-white p-4 px-10 mx-2 text-lg bg-opacity-50 rounded-lg">
+        <button className="hidden md:inline-block bg-gray-500 text-white p-4 px-10 mx-2 text-lg bg-opacity-50 rounded-lg">
           More Info
         </button>
       </div>

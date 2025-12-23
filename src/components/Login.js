@@ -86,15 +86,16 @@ const Login = () => {
       <Header />
       <div className="absolute">
         <img
+          className="h-screen w-screen object-cover"
           src={NETFLIX_BACKGROUND}
           alt="background"
         />
       </div>
       <form
         onSubmit={(e) => e.preventDefault()}
-        className="w-4/12 absolute p-14 my-[100px] mx-auto right-0 left-0 text-white rounded-md bg-black opacity-85"
+        className="w-3/4 md:w-4/12 absolute p-14 my-[100px] mx-auto right-0 left-0 text-white rounded-md bg-black opacity-85"
       >
-        <p className="text-5xl font-bold my-6 text-white">
+        <p className="text-3xl md:text-5xl font-bold my-6 text-white">
           {isSignInForm ? "Sign In" : "Sign Up"}
         </p>
         {!isSignInForm && (
@@ -120,27 +121,27 @@ const Login = () => {
         <p className="text-red-600 font-bold text-lg py-2">{signInError}</p>
         <button
           type="submit"
-          className="text-2xl bg-red-600 w-full my-2 p-2 rounded-lg"
+          className="text-lg md:text-2xl bg-red-600 w-full my-2 p-2 rounded-lg"
           onClick={handleSignInForm}
         >
           {isSignInForm ? "Sign In" : "Sign Up"}
         </button>
-        <p className="w-full my-2 p-2 text-center">OR</p>
-        <button
+        {/* <p className="w-full my-2 p-2 text-center">OR</p> */}
+        {/* <button
           type="button"
           className="my-2 p-2 bg-stone-500 text-center font-bold w-full rounded-lg"
         >
           Use a sign-in code
-        </button>
-        <p className="underline w-full text-center my-2">Forget password?</p>
-        <div className="my-2">
+        </button> */}
+        {/* <p className="underline w-full text-center my-2">Forget password?</p> */}
+        {/* <div className="my-2">
           <label>
             <input type="checkbox" />
             <span className="mx-4 w-full">Remember me</span>
           </label>
-        </div>
+        </div> */}
         <button type="button" className="my-2" onClick={toggleSignInForm}>
-          <span className="font-bold">
+          <span className="md:font-bold">
             {isSignInForm
               ? "New to Netflix? Sign Up"
               : "Already Registered? Sign In Now.."}
