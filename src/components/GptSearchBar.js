@@ -14,6 +14,32 @@ const GptSearchBar = () => {
   // loading state: disables input/button and shows spinner until request completes
   const [loading, setLoading] = useState(false);
 
+  // Example prompts with a bit of "masala" added to labels
+  const examples = [
+    {
+      title: "Adventures",
+      flavor:
+        "Adventures movies — wild expeditions, treasure hunts & big thrills",
+    },
+    {
+      title: "Science fiction",
+      flavor: "Science fiction — mind-bending tech, AI & alternate futures",
+    },
+    {
+      title: "Space",
+      flavor: "Space movies — cosmic thrills, rockets, aliens & zero-g drama",
+    },
+  ];
+
+  const handleExampleClick = (flavoredQuery) => {
+    if (loading) return;
+    // set input value and trigger the same search flow
+    if (searchText.current) {
+      searchText.current.value = flavoredQuery;
+      handleGptSearchClick();
+    }
+  };
+
   const searchMovieTMDB = async (movie) => {
     const data = await fetch(
       "https://api.themoviedb.org/3/search/movie?query=" +
@@ -67,7 +93,8 @@ const GptSearchBar = () => {
   };
 
   return (
-    <div className="pt-[30%] md:pt-[10%] flex justify-center">
+    // stack items vertically and keep the search form centered
+    <div className="pt-[30%] md:pt-[10%] flex flex-col items-center">
       <form
         className="w-full bg-black md:w-1/2 grid grid-cols-12 rounded-lg"
         onSubmit={(e) => {
@@ -119,6 +146,30 @@ const GptSearchBar = () => {
           <div className="col-span-12 m-4 text-white">Loading results...</div>
         )}
       </form>
+
+      {/* Example prompt chips: full-page width, horizontally scrollable; scrollbar hidden */}
+      <div
+        id="example-chips"
+        className="w-full mt-4 flex gap-3 overflow-x-auto px-4 py-2"
+        style={{ scrollbarWidth: "none", msOverflowStyle: "none" }} // Firefox & IE/Edge
+      >
+        {/* hide WebKit scrollbar */}
+        <style>{`#example-chips::-webkit-scrollbar{display:none;height:0}`}</style>
+        {examples.map((ex) => (
+          <button
+            key={ex.title}
+            type="button"
+            onClick={() => handleExampleClick(ex.flavor)}
+            disabled={loading}
+            title={ex.title}
+            // prevent shrinking so buttons stay on one horizontal line
+            className="whitespace-nowrap inline-block px-4 py-2 rounded-full bg-black bg-opacity-80 text-red-300 border border-red-700 hover:bg-red-700 hover:text-white transition disabled:opacity-50 flex-shrink-0"
+            aria-label={`Example: ${ex.title}`}
+          >
+            {ex.flavor}
+          </button>
+        ))}
+      </div>
     </div>
   );
 };
