@@ -1,6 +1,6 @@
 import { useSelector } from "react-redux";
 import lang from "../utils/languageConstants";
-import { useRef, useState } from "react";
+import { useRef, useState, useEffect } from "react";
 import { geminiModel } from "../utils/gemini";
 import { API_OPTIONS } from "../utils/constants";
 import { useDispatch } from "react-redux";
@@ -10,6 +10,12 @@ const GptSearchBar = () => {
   const language = useSelector((store) => store.config.lang);
   const searchText = useRef(null);
   const dispatch = useDispatch();
+
+  // rate-limit: allow 2 searches per 60 seconds
+  const TS_KEY = "gpt_search_timestamps";
+  const [timestamps, setTimestamps] = useState([]);
+  const [timeLeft, setTimeLeft] = useState(0); // seconds remaining until next allowed search
+  const [blockedMessage, setBlockedMessage] = useState("");
 
   // loading state: disables input/button and shows spinner until request completes
   const [loading, setLoading] = useState(false);
@@ -31,8 +37,77 @@ const GptSearchBar = () => {
     },
   ];
 
+  // load and prune timestamps from localStorage
+  const loadTimestamps = () => {
+    const raw = localStorage.getItem(TS_KEY);
+    let arr = [];
+    if (raw) {
+      try {
+        arr = JSON.parse(raw).filter((n) => typeof n === "number");
+      } catch (e) {
+        arr = [];
+      }
+    }
+    const now = Date.now();
+    arr = arr.filter((ts) => now - ts <= 60_000).sort((a, b) => a - b);
+    localStorage.setItem(TS_KEY, JSON.stringify(arr));
+    return arr;
+  };
+
+  const saveTimestamps = (arr) => {
+    const now = Date.now();
+    const pruned = arr.filter((ts) => now - ts <= 60_000).sort((a, b) => a - b);
+    setTimestamps(pruned);
+    localStorage.setItem(TS_KEY, JSON.stringify(pruned));
+  };
+
+  // recompute timeLeft from timestamps
+  const updateTimeLeft = () => {
+    const now = Date.now();
+    const pruned = timestamps
+      .filter((ts) => now - ts <= 60_000)
+      .sort((a, b) => a - b);
+    if (pruned.length < 2) {
+      setTimeLeft(0);
+      setBlockedMessage("");
+      saveTimestamps(pruned);
+      return;
+    }
+    // blocked: earliest timestamp determines wait
+    const earliest = pruned[0];
+    const elapsed = Math.floor((now - earliest) / 1000);
+    const wait = Math.max(0, 60 - elapsed);
+    if (wait <= 0) {
+      saveTimestamps(pruned.slice(1)); // remove earliest and retry
+      setTimeLeft(0);
+      setBlockedMessage("");
+    } else {
+      setTimeLeft(wait);
+      setBlockedMessage(`Please wait ${wait} seconds before next search`);
+    }
+  };
+
+  // initial load
+  useEffect(() => {
+    saveTimestamps(loadTimestamps());
+  }, []);
+
+  // update countdown every second while blocked
+  useEffect(() => {
+    if (timeLeft <= 0 && timestamps.length < 2) return;
+    const id = setInterval(() => {
+      updateTimeLeft();
+    }, 1000);
+    return () => clearInterval(id);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [timestamps, timeLeft]);
+
   const handleExampleClick = (flavoredQuery) => {
-    if (loading) return;
+    if (loading || timeLeft > 0) {
+      if (timeLeft > 0)
+        setBlockedMessage(`Please wait ${timeLeft} seconds before next search`);
+      return;
+    }
     // set input value and trigger the same search flow
     if (searchText.current) {
       searchText.current.value = flavoredQuery;
@@ -54,6 +129,15 @@ const GptSearchBar = () => {
   const handleGptSearchClick = async () => {
     const query = searchText.current.value;
     if (!query?.trim() || loading) return; // prevent empty or duplicate requests
+    // check rate-limit
+    updateTimeLeft();
+    if (timeLeft > 0) {
+      setBlockedMessage(`Please wait ${timeLeft} seconds before next search`);
+      return;
+    }
+    const now = Date.now();
+    // add this search timestamp
+    saveTimestamps([...timestamps.filter((ts) => now - ts <= 60_000), now]);
     setLoading(true);
 
     const prompt = `
@@ -89,6 +173,8 @@ const GptSearchBar = () => {
       console.error("Gemini Error:", err);
     } finally {
       setLoading(false);
+      // recalc after finishing
+      saveTimestamps(loadTimestamps());
     }
   };
 
@@ -113,7 +199,7 @@ const GptSearchBar = () => {
           type="button"
           className="col-span-3 m-4 py-2 px-4 bg-red-700 text-white rounded-lg hover:bg-red-800 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
           onClick={handleGptSearchClick}
-          disabled={loading}
+          disabled={loading || timeLeft > 0}
           aria-busy={loading}
         >
           {loading ? (
@@ -141,10 +227,15 @@ const GptSearchBar = () => {
             lang[language].search
           )}
         </button>
-        {/* Loading status */}
-        {loading && (
-          <div className="col-span-12 m-4 text-white">Loading results...</div>
-        )}
+        {/* Loading or search count / wait message */}
+        <div className="col-span-12 m-4 text-white">
+          {loading
+            ? "Loading results..."
+            : timeLeft > 0
+            ? blockedMessage ||
+              `Please wait ${timeLeft} seconds before next search`
+            : `Searches: ${timestamps.length}/2`}
+        </div>
       </form>
 
       {/* Example prompt chips: full-page width, horizontally scrollable; scrollbar hidden */}
@@ -160,7 +251,7 @@ const GptSearchBar = () => {
             key={ex.title}
             type="button"
             onClick={() => handleExampleClick(ex.flavor)}
-            disabled={loading}
+            disabled={loading || timeLeft > 0}
             title={ex.title}
             // prevent shrinking so buttons stay on one horizontal line
             className="whitespace-nowrap inline-block px-4 py-2 rounded-full bg-black bg-opacity-80 text-red-300 border border-red-700 hover:bg-red-700 hover:text-white transition disabled:opacity-50 flex-shrink-0"
